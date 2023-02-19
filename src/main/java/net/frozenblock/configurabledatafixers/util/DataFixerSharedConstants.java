@@ -1,4 +1,4 @@
-package net.frozenblock.template.util;
+package net.frozenblock.configurabledatafixers.util;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TemplateSharedConstants {
-	public static final String MOD_ID = "frozenblock_template_mod";
+public class DataFixerSharedConstants {
+	public static final String MOD_ID = "configureabledatafixers";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static boolean DEV_LOGGING = false;
 	/**
@@ -21,7 +21,6 @@ public class TemplateSharedConstants {
 	 * It's smart to use this for at least registries.
 	 */
 	public static boolean UNSTABLE_LOGGING = FabricLoader.getInstance().isDevelopmentEnvironment();
-	public static final ModContainer MOD_CONTAINER = FabricLoader.getInstance().getModContainer(MOD_ID).orElseThrow();
 	public static boolean areConfigsInit = false;
 
 	/**

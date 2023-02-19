@@ -26,4 +26,4 @@ pluginManagement {
     }
 }
 
-rootProject.setName("Template Mod")
+rootProject.setName("Configurable Data Fixers")

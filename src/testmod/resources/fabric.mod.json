@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "id": "configurabledatafixers",
-  "version": "${version}",
+  "id": "configurabledatafixers_testmod",
+  "version": "1.0.0",
 
-  "name": "Configurable Data Fixers",
-  "description": "Provides a config for converting in-game registered IDs.",
+  "name": "Configurable Data Fixers Testmod",
+  "description": "Template description",
   "authors": [
     "FrozenBlock"
   ],
@@ -18,24 +18,20 @@
   },
 
   "license": "LGPL-3.0",
-  "icon": "assets/configurabledatafixers/icon.png",
+  "icon": "assets/configurabledatafixers_testmod/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.frozenblock.configurabledatafixers.ConfigurableDataFixers"
+      "net.frozenblock.configurabledatafixers.testmod.ConfigurableDataFixersTestmod"
     ]
   },
-  "mixins": [
-    "configurable_data_fixers.mixins.json"
-  ],
-  "accessWidener": "configurable_data_fixers.accesswidener",
 
   "depends": {
     "frozenlib": ">=1.1.11-",
     "fabricloader": ">=0.14.12",
     "fabric-api": ">=0.73.0",
-    "minecraft": ">=${minecraft_version}",
+    "minecraft": ">=1.19.2",
     "java": ">=17"
   },
   "breaks": {
