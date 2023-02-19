@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 @Mixin(MappedRegistry.class)
-public abstract class MappedRegistryMixin<T> extends WritableRegistry<T> {
+public abstract class MappedRegistryMixin<T> implements WritableRegistry<T> {
 
 	@Shadow
 	@Final
@@ -37,10 +37,6 @@ public abstract class MappedRegistryMixin<T> extends WritableRegistry<T> {
 	@Nullable
 	private static <T> T getValueFromNullable(Holder.@Nullable Reference<T> reference) {
 		return null;
-	}
-
-	public MappedRegistryMixin(ResourceKey<? extends Registry<T>> resourceKey, Lifecycle lifecycle) {
-		super(resourceKey, lifecycle);
 	}
 
 	@Inject(

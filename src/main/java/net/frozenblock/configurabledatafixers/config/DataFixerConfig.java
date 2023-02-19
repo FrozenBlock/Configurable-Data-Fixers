@@ -12,6 +12,7 @@ import net.frozenblock.lib.config.api.instance.Config;
 import net.frozenblock.lib.config.api.instance.gson.GsonConfig;
 import net.frozenblock.lib.config.api.registry.ConfigRegistry;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 
 public class DataFixerConfig {
@@ -32,7 +33,7 @@ public class DataFixerConfig {
 			REGISTRY_FIXER_LIST,
 			List.of(
 					new RegistryFixer(
-							Registry.BLOCK_REGISTRY.location(),
+							Registries.BLOCK.location(),
 							List.of(
 									new Fixer(
 											new ResourceLocation("examplemod:example_block"),
@@ -41,7 +42,7 @@ public class DataFixerConfig {
 							)
 					),
 					new RegistryFixer(
-							Registry.ENTITY_TYPE_REGISTRY.location(),
+							Registries.ENTITY_TYPE.location(),
 							List.of(
 									new Fixer(
 											new ResourceLocation("examplemod:example_entity"),
@@ -50,7 +51,7 @@ public class DataFixerConfig {
 							)
 					),
 					new RegistryFixer(
-							Registry.ITEM_REGISTRY.location(),
+							Registries.ITEM.location(),
 							List.of(
 									new Fixer(
 											new ResourceLocation("examplemod:example_item"),
@@ -59,7 +60,7 @@ public class DataFixerConfig {
 							)
 					),
 					new RegistryFixer(
-							Registry.BIOME_REGISTRY.location(),
+							Registries.BIOME.location(),
 							List.of(
 									new Fixer(
 											new ResourceLocation("examplemod:example_biome"),
