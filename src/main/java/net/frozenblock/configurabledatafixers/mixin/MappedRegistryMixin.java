@@ -1,6 +1,7 @@
 package net.frozenblock.configurabledatafixers.mixin;
 
 import com.mojang.serialization.Lifecycle;
+import net.frozenblock.configurabledatafixers.ConfigurableDataFixers;
 import net.frozenblock.configurabledatafixers.config.DataFixerConfig;
 import net.frozenblock.configurabledatafixers.util.DataFixerSharedConstants;
 import net.frozenblock.configurabledatafixers.util.Fixer;
@@ -42,19 +43,16 @@ public abstract class MappedRegistryMixin<T> extends WritableRegistry<T> {
 		super(resourceKey, lifecycle);
 	}
 
-	@ModifyVariable(
+	@Inject(
 			method = "get(Lnet/minecraft/resources/ResourceLocation;)Ljava/lang/Object;",
-			at = @At(
-					value = "INVOKE",
-					target = "Lnet/minecraft/core/MappedRegistry;getValueFromNullable(Lnet/minecraft/core/Holder$Reference;)Ljava/lang/Object;"
-			)
+			at = @At("RETURN"),
+			cancellable = true
 	)
-	private Holder.Reference<T> fixedValue(Holder.Reference<T> original, ResourceLocation key) {
-		if (original == null) {
-			var fixed = fixValues(key);
-			return this.byLocation.get(fixed);
+	private void fixedValue(@Nullable ResourceLocation name, CallbackInfoReturnable<@Nullable T> cir) {
+		if (name != null && cir.getReturnValue() == null) {
+			var fixed = fixValues(name);
+			cir.setReturnValue(getValueFromNullable(this.byLocation.get(fixed)));
 		}
-		return original;
 	}
 
 	@Inject(
@@ -71,19 +69,18 @@ public abstract class MappedRegistryMixin<T> extends WritableRegistry<T> {
 
 	@Unique
 	private ResourceLocation fixValues(@Nullable ResourceLocation name) {
-		var instance = DataFixerConfig.get();
-		var config = instance.config();
-		var registryFixers = config.registryFixers;
-		DataFixerSharedConstants.log("Running fixer for ID " + name, DataFixerSharedConstants.UNSTABLE_LOGGING);
-		var fixers = registryFixers.value();
-		for (RegistryFixer registryFixer : fixers) {
-			if (registryFixer.registryKey() == this.key().location()) {
-				DataFixerSharedConstants.log("Value fixer for registry " + this.key().location() + " ran", DataFixerSharedConstants.UNSTABLE_LOGGING);
-				for (Fixer fixer : registryFixer.fixers()) {
-					DataFixerSharedConstants.log("Fixer for old_id: " + fixer.oldId() + " new_id: " + fixer.newId() + " ran whilst fixing " + name, DataFixerSharedConstants.UNSTABLE_LOGGING);
-					if (fixer.oldId() == name) {
-						DataFixerSharedConstants.log("Changed old ID " + name + " to new ID " + fixer.newId(), DataFixerSharedConstants.UNSTABLE_LOGGING);
-						return fixer.newId();
+		if (name != null) {
+			var instance = DataFixerConfig.get();
+			var config = instance.config();
+			var registryFixers = config.registryFixers;
+			var fixers = registryFixers.value();
+			for (RegistryFixer registryFixer : fixers) {
+				if (registryFixer.registryKey().equals(this.key().location())) {
+					for (Fixer fixer : registryFixer.fixers()) {
+						if (fixer.oldId().equals(name)) {
+							DataFixerSharedConstants.log("Successfully changed old ID " + name + " to new ID " + fixer.newId(), DataFixerSharedConstants.UNSTABLE_LOGGING);
+							return fixer.newId();
+						}
 					}
 				}
 			}

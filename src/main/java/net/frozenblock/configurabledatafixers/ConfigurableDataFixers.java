@@ -10,8 +10,6 @@ public class ConfigurableDataFixers implements ModInitializer {
 	public void onInitialize() {
 		DataFixerSharedConstants.startMeasuring(this);
 
-		DataFixerConfig.get().load();
-
 		for (var registryFixer : DataFixerConfig.get().config().registryFixers.value()) {
 			for (var fixer : registryFixer.fixers()) {
 				DataFixerSharedConstants.log(
