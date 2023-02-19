@@ -234,7 +234,7 @@ dependencies {
 processResources {
 	Map<String, Object> properties = new HashMap<>()
 	properties.put("version", project.version)
-	properties.put("minecraft_version", project.minecraft_version)
+	properties.put("minecraft_version", "1.19.4-")
 
 	properties.forEach((a, b) -> inputs.property(a, b))
 
