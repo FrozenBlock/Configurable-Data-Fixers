@@ -191,33 +191,12 @@ dependencies {
 	// FrozenLib
 	include(modImplementation("maven.modrinth:frozenlib:${frozenlib_version}"))
 
-	// CaffeineConfig
-	//include(modImplementation("net.caffeinemc:mixin-config:1.0.0+1.17"))
-
-	// Lunade
-	modImplementation("maven.modrinth:simple-copper-pipes:${copperpipes_version}")
-
-	// NBT Crafting
-	include(modImplementation("maven.modrinth:nbt-crafting:${nbtcrafting_version}"))
-
-	// CaffeineConfig
-	include(modImplementation("net.caffeinemc:mixin-config:1.0.0+1.17"))
-
-	// TerraBlender
-	modCompileOnly("com.github.glitchfiend:TerraBlender-fabric:${minecraft_version}-${terrablender_version}")
-
 	testmodImplementation(sourceSets.main.output)
 
 	// Sodium
 	modCompileOnly("maven.modrinth:sodium:${sodium_version}")
 	modCompileOnly("org.joml:joml:1.10.4")
 	modCompileOnly("org.anarres:jcpp:1.4.14")
-
-	// BetterEnd
-	modCompileOnly("maven.modrinth:betterend:${betterend_version}")
-
-	// BetterNether
-	modCompileOnly("maven.modrinth:betternether:${betternether_version}")
 
 	// only affects runClient, does not affect gradlew build.
 	// add -PuseThirdPartyMods=false to not use these
