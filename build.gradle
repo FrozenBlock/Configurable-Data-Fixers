@@ -19,6 +19,7 @@ plugins {
 	id("java-library")
 }
 
+project.ext.local_frozenlib = findProject(":FrozenLib") != null
 project.ext.release = findProperty("releaseType") == "stable"
 
 setArchivesBaseName(project.archives_base_name)
@@ -58,7 +59,6 @@ loom {
 	interfaceInjection {
 		// When enabled, injected interfaces from dependecies will be applied.
 		setEnableDependencyInterfaceInjection(false)
-		//enableDependencyInterfaceInjection = false
 	}
 }
 
@@ -146,10 +146,6 @@ repositories {
 			includeGroup("curse.maven")
 		}
 	}
-	/*maven {
-		setName("Siphalor's Maven")
-		setUrl("https://maven.siphalor.de")
-	}*/
 	maven {
 		setUrl("https://maven.flashyreese.me/releases")
 	}
@@ -176,7 +172,6 @@ dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft("com.mojang:minecraft:${minecraft_version}")
 	mappings(loom.layered {
-		// please annoy treetrain if this doesnt work
 		it.mappings("org.quiltmc:quilt-mappings:${minecraft_version}+build.${quilt_mappings}:intermediary-v2")
 		it.parchment("org.parchmentmc.data:parchment-1.19.2:${parchment_mappings}@zip")
 		it.officialMojangMappings {
@@ -185,11 +180,16 @@ dependencies {
 	})
 	modImplementation("net.fabricmc:fabric-loader:${loader_version}")
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
+	// Fabric API
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${fabric_version}")
 
 	// FrozenLib
-	include(modImplementation("maven.modrinth:frozenlib:${frozenlib_version}"))
+	println("Using local FrozenLib: ${project.local_frozenlib}")
+	if (project.local_frozenlib) {
+		include(implementation(project(path: ":FrozenLib", configuration: "dev")))
+	} else {
+		include(modImplementation("maven.modrinth:frozenlib:${frozenlib_version}"))
+	}
 
 	testmodImplementation(sourceSets.main.output)
 

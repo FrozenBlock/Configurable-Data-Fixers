@@ -4,6 +4,8 @@ import com.mojang.serialization.Codec;
 import java.util.List;
 import net.frozenblock.configurabledatafixers.util.DataFixerSharedConstants;
 import net.frozenblock.configurabledatafixers.util.Fixer;
+import net.frozenblock.configurabledatafixers.util.NbtFixer;
+import net.frozenblock.configurabledatafixers.util.NbtKeyFixer;
 import net.frozenblock.configurabledatafixers.util.RegistryFixer;
 import net.frozenblock.lib.config.api.entry.Exclude;
 import net.frozenblock.lib.config.api.entry.TypedEntry;
@@ -20,6 +22,13 @@ public class DataFixerConfig {
 			new TypedEntryType<>(
 					DataFixerSharedConstants.MOD_ID,
 					Codec.list(RegistryFixer.CODEC)
+			)
+	);
+
+	private static final TypedEntryType<List<NbtFixer>> NBT_FIXER_LIST = ConfigRegistry.register(
+			new TypedEntryType<>(
+					DataFixerSharedConstants.MOD_ID,
+					Codec.list(NbtFixer.CODEC)
 			)
 	);
 
@@ -64,6 +73,21 @@ public class DataFixerConfig {
 									new Fixer(
 											new ResourceLocation("examplemod:example_biome"),
 											new ResourceLocation("minecraft:plains")
+									)
+							)
+					)
+			)
+	);
+
+	public TypedEntry<List<NbtFixer>> nbtFixers = new TypedEntry<>(
+			NBT_FIXER_LIST,
+			List.of(
+					new NbtFixer(
+							"biomes",
+							List.of(
+									new NbtKeyFixer(
+											"examplemod:example_biome",
+											"minecraft:swamp"
 									)
 							)
 					)
