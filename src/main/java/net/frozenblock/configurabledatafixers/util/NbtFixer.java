@@ -23,7 +23,6 @@ public record NbtFixer(String key, List<NbtKeyFixer> fixers) {
 			if (tag.contains(key)) {
 				var tagToFix = tag.getCompound(key);
 				var fixers = nbtFixer.fixers();
-				DataFixerSharedConstants.log("Fixing NBT tag " + key + "...", DataFixerSharedConstants.UNSTABLE_LOGGING);
 				for (var keyFixer : fixers) {
 					if (tagToFix.contains(keyFixer.oldKey(), 10)) {
 						var oldKey = keyFixer.oldKey();
