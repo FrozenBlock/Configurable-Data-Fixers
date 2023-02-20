@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.frozenblock.configurabledatafixers.config.DataFixerConfig;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import java.util.List;
 
 public record NbtFixer(String key, List<NbtKeyFixer> fixers) {
@@ -24,7 +25,7 @@ public record NbtFixer(String key, List<NbtKeyFixer> fixers) {
 				var tagToFix = tag.getCompound(key);
 				var fixers = nbtFixer.fixers();
 				for (var keyFixer : fixers) {
-					if (tagToFix.contains(keyFixer.oldKey(), 10)) {
+					if (tagToFix.contains(keyFixer.oldKey(), Tag.TAG_COMPOUND)) {
 						var oldKey = keyFixer.oldKey();
 						var newKey = keyFixer.newKey();
 						var oldTag = tagToFix.getCompound(oldKey);
