@@ -8,7 +8,7 @@ public record SchemaEntry(int version, List<DataFixEntry> entries) {
 	public static final Codec<SchemaEntry> CODEC = RecordCodecBuilder.create(instance ->
 			instance.group(
 					Codec.INT.fieldOf("version").forGetter(SchemaEntry::version),
-					Codec.list(DataFixEntry.CODEC).fieldOf("data_fix").forGetter(SchemaEntry::entries)
+					Codec.list(DataFixEntry.CODEC).fieldOf("data_fixes").forGetter(SchemaEntry::entries)
 			).apply(instance, SchemaEntry::new)
 	);
 }

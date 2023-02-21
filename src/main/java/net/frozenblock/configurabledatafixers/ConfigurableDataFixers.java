@@ -1,6 +1,5 @@
 package net.frozenblock.configurabledatafixers;
 
-import com.mojang.datafixers.DataFix;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
 import net.fabricmc.api.ModInitializer;
@@ -9,20 +8,14 @@ import net.frozenblock.configurabledatafixers.config.DataFixerConfig;
 import net.frozenblock.configurabledatafixers.util.DataFixerSharedConstants;
 import net.frozenblock.configurabledatafixers.util.DataFixEntry;
 import net.frozenblock.configurabledatafixers.util.Fixer;
-import net.minecraft.util.datafix.fixes.BlockRenameFix;
-import net.minecraft.util.datafix.fixes.ItemRenameFix;
-import net.minecraft.util.datafix.fixes.RenameBiomesFix;
-import net.minecraft.util.datafix.fixes.SimplestEntityRenameFix;
 import net.minecraft.util.datafix.schemas.NamespacedSchema;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.quiltmc.qsl.frozenblock.misc.datafixerupper.api.QuiltDataFixerBuilder;
 import org.quiltmc.qsl.frozenblock.misc.datafixerupper.api.QuiltDataFixes;
 import org.quiltmc.qsl.frozenblock.misc.datafixerupper.api.SimpleFixes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class ConfigurableDataFixers implements ModInitializer {
 
@@ -38,22 +31,22 @@ public class ConfigurableDataFixers implements ModInitializer {
 	private static void applyDataFixes(final @NotNull ModContainer mod) {
 		DataFixerSharedConstants.log("Applying configurable data fixes", DataFixerSharedConstants.UNSTABLE_LOGGING);
 		var config = DataFixerConfig.get().config();
-		if (config.dataFixes == null) {
+		if (config.schemas == null) {
 			throw new IllegalStateException("Please update your config file!");
 		}
-		var dataFixes = config.dataFixes.value();
+		var schemas = config.schemas.value();
 		var dataVersion = config.dataVersion;
 
 		var builder = new QuiltDataFixerBuilder(dataVersion);
 
 		var maxSchema = 0;
-		List<Schema> schemas = new ArrayList<>();
-		if (dataFixes.size() > 0) {
+		List<Schema> addedSchemas = new ArrayList<>();
+		if (schemas.size() > 0) {
 			var base = builder.addSchema(0, QuiltDataFixes.BASE_SCHEMA);
-			schemas.add(base);
+			addedSchemas.add(base);
 		}
 
-		for (var fix : dataFixes) {
+		for (var fix : schemas) {
 			var version = fix.version();
 			if (version > dataVersion) {
 				DataFixerSharedConstants.error("Data fix version " + version + " is higher than the current data version " + dataVersion, true);
@@ -62,12 +55,12 @@ public class ConfigurableDataFixers implements ModInitializer {
 
 			if (version > maxSchema) {
 				var schema = builder.addSchema(version, NamespacedSchema::new);
-				schemas.add(schema);
+				addedSchemas.add(schema);
 				maxSchema = version;
 			}
 
 			try {
-				var schema = schemas.get(version);
+				var schema = addedSchemas.get(version);
 
 				for (var entry : fix.entries()) {
 					for (var fixer : entry.fixers()) {

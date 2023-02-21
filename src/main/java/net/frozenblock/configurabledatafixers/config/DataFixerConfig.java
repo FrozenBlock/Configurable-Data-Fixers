@@ -39,7 +39,7 @@ public class DataFixerConfig {
 
 	public int dataVersion = 0;
 
-	public TypedEntry<List<SchemaEntry>> dataFixes = new TypedEntry<>(
+	public TypedEntry<List<SchemaEntry>> schemas = new TypedEntry<>(
 			SCHEMA_ENTRY_LIST,
 			List.of(
 					new SchemaEntry(
