@@ -35,6 +35,7 @@ public class ConfigurableDataFixersTestmod implements ModInitializer {
 		 * In the configuration, add a data fixer with the old id and the new id.
 		 */
 		Registry.register(Registry.ITEM, id("test_item"), new Item(new FabricItemSettings().group(CreativeModeTab.TAB_MISC)));
+
 		BuiltinRegistries.register(
 				BuiltinRegistries.BIOME,
 				TEST_BIOME,
