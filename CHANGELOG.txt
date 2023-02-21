@@ -4,4 +4,4 @@ Make sure to clear after release
 
 Put changelog here:
 -----------------
-- Initial release
+- Added schema-based data fixers
