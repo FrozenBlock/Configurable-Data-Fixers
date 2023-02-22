@@ -188,7 +188,8 @@ dependencies {
 	if (project.local_frozenlib) {
 		include(implementation(project(path: ":FrozenLib", configuration: "dev")))
 	} else {
-		include(modImplementation("maven.modrinth:frozenlib:${frozenlib_version}"))
+		//include(modImplementation("maven.modrinth:frozenlib:${frozenlib_version}"))
+		include(modImplementation("com.github.FrozenBlock:FrozenLib:1.19.3-SNAPSHOT"))
 	}
 
 	testmodImplementation(sourceSets.main.output)
