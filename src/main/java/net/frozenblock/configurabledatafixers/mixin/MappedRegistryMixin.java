@@ -1,12 +1,7 @@
 package net.frozenblock.configurabledatafixers.mixin;
 
 import com.mojang.serialization.Lifecycle;
-import net.frozenblock.configurabledatafixers.ConfigurableDataFixers;
-import net.frozenblock.configurabledatafixers.config.DataFixerConfig;
-import net.frozenblock.configurabledatafixers.util.DataFixerSharedConstants;
-import net.frozenblock.configurabledatafixers.util.Fixer;
 import net.frozenblock.configurabledatafixers.util.RegistryFixer;
-import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
@@ -17,14 +12,10 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
 
 @Mixin(MappedRegistry.class)
 public abstract class MappedRegistryMixin<T> implements WritableRegistry<T> {
@@ -46,7 +37,7 @@ public abstract class MappedRegistryMixin<T> implements WritableRegistry<T> {
 	)
 	private void fixedValue(@Nullable ResourceLocation name, CallbackInfoReturnable<@Nullable T> cir) {
 		if (name != null && cir.getReturnValue() == null) {
-			var fixed = fixValues(name);
+			var fixed = RegistryFixer.getFixedValueInRegistry(this, name);
 			cir.setReturnValue(getValueFromNullable(this.byLocation.get(fixed)));
 		}
 	}
@@ -58,29 +49,8 @@ public abstract class MappedRegistryMixin<T> implements WritableRegistry<T> {
 	)
 	private void fixedValue(@Nullable ResourceKey<T> key, CallbackInfoReturnable<@Nullable T> cir) {
 		if (key != null && cir.getReturnValue() == null) {
-			var fixed = fixValues(key.location());
+			var fixed = RegistryFixer.getFixedValueInRegistry(this, key.location());
 			cir.setReturnValue(getValueFromNullable(this.byLocation.get(fixed)));
 		}
-	}
-
-	@Unique
-	private ResourceLocation fixValues(@Nullable ResourceLocation name) {
-		if (name != null) {
-			var instance = DataFixerConfig.get();
-			var config = instance.config();
-			var registryFixers = config.registryFixers;
-			var fixers = registryFixers.value();
-			for (RegistryFixer registryFixer : fixers) {
-				if (registryFixer.registryKey().equals(this.key().location())) {
-					for (Fixer fixer : registryFixer.fixers()) {
-						if (fixer.oldId().equals(name)) {
-							DataFixerSharedConstants.log("Successfully changed old ID " + name + " to new ID " + fixer.newId(), DataFixerSharedConstants.UNSTABLE_LOGGING);
-							return fixer.newId();
-						}
-					}
-				}
-			}
-		}
-		return null;
 	}
 }
