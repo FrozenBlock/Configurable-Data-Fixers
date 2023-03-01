@@ -1,24 +1,23 @@
 pluginManagement {
     repositories {
         maven {
-            setName("Quilt")
+            name = "Quilt"
             setUrl("https://maven.quiltmc.org/repository/release/")
         }
         maven {
-            setName("Quilt Snapshot")
+            name = "Quilt Snapshot"
             setUrl("https://maven.quiltmc.org/repository/snapshot/")
         }
         maven {
-            setName("Fabric")
+            name = "Fabric"
             setUrl("https://maven.fabricmc.net/")
         }
-        jcenter()
         maven {
-            setName("Forge")
+            name = "Forge"
             setUrl("https://files.minecraftforge.net/maven/")
         }
         maven {
-            setName("Jitpack")
+            name = "Jitpack"
             setUrl("https://jitpack.io/")
         }
         mavenCentral()
@@ -26,7 +25,7 @@ pluginManagement {
     }
 }
 
-rootProject.setName("Configurable Data Fixers")
+rootProject.name = "Configurable Data Fixers"
 
 localRepository("FrozenLib", "maven.modrinth:frozenlib")
 
