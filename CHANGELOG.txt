@@ -4,7 +4,4 @@ Make sure to clear after release
 
 Put changelog here:
 -----------------
-- Added schema-based data fixers
-  There are 4 types: biome, block, entity, and item
-  However, it is recommended to use registry fixers for items.
-- Fixed config file name (changes are not automatically transferred, this will have to be done manually)
+- Fixed a crash on 1.19.3+
