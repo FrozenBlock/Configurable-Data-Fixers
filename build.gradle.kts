@@ -469,8 +469,8 @@ fun getBranch(): String {
 
 curseforge {
     val token = System.getenv("CURSEFORGE_TOKEN")
-    apiKey = { if (token == null || token.isEmpty()) "unset" else token }
-    val gameVersion = { if (curseforge_minecraft_version != "null") curseforge_minecraft_version else minecraft_version }
+    apiKey = if (token == null || token.isEmpty()) "unset" else token
+    val gameVersion = if (curseforge_minecraft_version != "null") curseforge_minecraft_version else minecraft_version
     project(closureOf<CurseProject> {
         id = curseforge_id
         changelog = changelog_text
