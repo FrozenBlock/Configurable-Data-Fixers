@@ -67,6 +67,24 @@ public class DataFixerConfig {
 															new ResourceLocation("minecraft:deepslate")
 													)
 											)
+									),
+									new DataFixEntry(
+											"entity",
+											List.of(
+													new Fixer(
+															new ResourceLocation("examplemod:example_entity"),
+															new ResourceLocation("minecraft:cow")
+													)
+											)
+									),
+									new DataFixEntry(
+											"item",
+											List.of(
+													new Fixer(
+															new ResourceLocation("examplemod:example_item"),
+															new ResourceLocation("minecraft:stone")
+													)
+											)
 									)
 							)
 					),
