@@ -5,3 +5,5 @@ Make sure to clear after release
 Put changelog here:
 -----------------
 - Added schema-based data fixers
+  There are 4 types: biome, block, entity, and item
+  However, it is recommended to use registry fixers for items.
