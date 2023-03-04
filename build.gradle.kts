@@ -249,42 +249,11 @@ dependencies {
         modImplementation("maven.modrinth:frozenlib:${frozenlib_version}")?.let { include(it) }
     }
 
-    // CaffeineConfig
-    //include(modImplementation("net.caffeinemc:mixin-config:1.0.0+1.17"))
-
-    // Lunade
-    modImplementation("maven.modrinth:simple-copper-pipes:${copperpipes_version}")
-
     // Mod Menu
-    modImplementation("com.terraformersmc:modmenu:${modmenu_version}")
+    //modImplementation("com.terraformersmc:modmenu:${modmenu_version}")
 
     // Cloth Config
-    modImplementation("me.shedaniel.cloth:cloth-config-fabric:${cloth_config_version}") {
-        exclude(group = "net.fabricmc.fabric-api")
-        exclude(group = "com.terraformersmc")
-    }
-
-    // NBT Crafting
-    modImplementation("maven.modrinth:nbt-crafting:${nbtcrafting_version}")?.let { include(it) }
-
-    // CaffeineConfig
-    modImplementation("net.caffeinemc:mixin-config:1.0.0+1.17")?.let { include(it) }
-
-    // TerraBlender
-    modImplementation("com.github.glitchfiend:TerraBlender-fabric:${minecraft_version}-${terrablender_version}")
-
     "testmodImplementation"(sourceSets.main.get().output)
-
-    // Sodium
-    modCompileOnly("maven.modrinth:sodium:${sodium_version}")
-    modCompileOnly("org.joml:joml:1.10.4")
-    modCompileOnly("org.anarres:jcpp:1.4.14")
-
-    // BetterEnd
-    modCompileOnly("maven.modrinth:betterend:${betterend_version}")
-
-    // BetterNether
-    modCompileOnly("maven.modrinth:betternether:${betternether_version}")
 
     // only affects runClient, does not affect gradlew build.
     // add -PuseThirdPartyMods=false to not use these
