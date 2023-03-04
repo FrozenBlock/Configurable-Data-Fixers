@@ -7,7 +7,6 @@ import java.nio.file.Files
 import java.util.Properties
 import org.kohsuke.github.GHReleaseBuilder
 import org.kohsuke.github.GitHub
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
@@ -29,7 +28,6 @@ plugins {
     idea
     `java-library`
     java
-    kotlin("jvm") version "1.8.10"
 }
 
 public val minecraft_version: String by project
@@ -79,7 +77,7 @@ version = getVersion()
 group = maven_group
 
 public val local_frozenlib = findProject(":FrozenLib") != null
-public val release = findProperty("releaseType") == "stable"
+public val release = findProperty("releaseType")?.equals("stable")
 
 public val testmod by sourceSets.registering {
     runtimeClasspath += sourceSets.main.get().runtimeClasspath
@@ -225,7 +223,6 @@ repositories {
     flatDir {
         dirs("libs")
     }
-    mavenCentral()
 }
 
 dependencies {
@@ -319,7 +316,6 @@ dependencies {
         modRuntimeOnly("me.flashyreese.mods:sodium-extra-fabric:${sodium_extra_version}")
         modRuntimeOnly("io.github.douira:glsl-transformer:0.27.0")
     }
-    implementation(kotlin("stdlib-jdk8"))
 }
 
 quiltflower {
@@ -375,16 +371,6 @@ tasks {
     }
 }
 
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions {
-    jvmTarget = "17"
-}
-val compileTestKotlin: KotlinCompile by tasks
-compileTestKotlin.kotlinOptions {
-    jvmTarget = "17"
-}
-
-
 public val test: Task by tasks
 public val runClient: Task by tasks
 public val runDatagen: Task by tasks
@@ -420,14 +406,14 @@ artifacts {
 fun getVersion(): String {
     var version = "$mod_version-$mod_loader+$minecraft_version"
 
-    if (!release) {
+    if (release != null && !release) {
         version += "-unstable"
     }
 
     return version
 }
 
-if (!(release || System.getenv("GITHUB_ACTIONS") == "true")) {
+if (!(release == true || System.getenv("GITHUB_ACTIONS") == "true")) {
     test.dependsOn(runDatagen)
     runClient.dependsOn(runDatagen)
 }
@@ -481,78 +467,75 @@ fun getBranch(): String {
     return branch.substring(branch.lastIndexOf("/") + 1)
 }
 
-tasks {
-    curseforge {
-        val token = System.getenv("CURSEFORGE_TOKEN")
-        apiKey = { if (token == null || token.isEmpty()) "unset" else token }
-        val gameVersion = { if (curseforge_minecraft_version != "null") curseforge_minecraft_version else minecraft_version }
-        project(closureOf<CurseProject> {
-            id = curseforge_id
-            changelog = changelog_text
-            releaseType = release_type
-            addGameVersion("Fabric")
-            addGameVersion("Quilt")
-            addGameVersion(gameVersion)
-            relations(closureOf<CurseRelation> {
-                requiredDependency("fabric-api")
-                embeddedLibrary("frozenlib")
-            })
-            mainArtifact(file("build/libs/${remapJar.get().archiveBaseName.get()}-${version}.jar"), closureOf<CurseArtifact> {
-                displayName = display_name
-            })
-            afterEvaluate {
-                uploadTask.dependsOn(remapJar)
-            }
+curseforge {
+    val token = System.getenv("CURSEFORGE_TOKEN")
+    apiKey = { if (token == null || token.isEmpty()) "unset" else token }
+    val gameVersion = { if (curseforge_minecraft_version != "null") curseforge_minecraft_version else minecraft_version }
+    project(closureOf<CurseProject> {
+        id = curseforge_id
+        changelog = changelog_text
+        releaseType = release_type
+        addGameVersion("Fabric")
+        addGameVersion("Quilt")
+        addGameVersion(gameVersion)
+        relations(closureOf<CurseRelation> {
+            requiredDependency("fabric-api")
+            embeddedLibrary("frozenlib")
         })
-        curseGradleOptions.forgeGradleIntegration = false
-    }
-
-    modrinth {
-        token.set(System.getenv("MODRINTH_TOKEN"))
-        projectId.set(modrinth_id)
-        versionNumber.set(modrinth_version)
-        versionName.set(display_name)
-        versionType.set(release_type)
-        changelog.set(changelog_text)
-        uploadFile.set(file("build/libs/${remapJar.get().archiveBaseName.get()}-${version}.jar"))
-        gameVersions.set(listOf(minecraft_version))
-        loaders.set(listOf("fabric", "quilt"))
-        dependencies {
-            required.project("fabric-api")
-            embedded.project("frozenlib")
+        mainArtifact(file("build/libs/${tasks.remapJar.get().archiveBaseName.get()}-${version}.jar"), closureOf<CurseArtifact> {
+            displayName = display_name
+        })
+        afterEvaluate {
+            uploadTask.dependsOn(remapJar)
         }
+    })
+    curseGradleOptions.forgeGradleIntegration = false
+}
+
+modrinth {
+    token.set(System.getenv("MODRINTH_TOKEN"))
+    projectId.set(modrinth_id)
+    versionNumber.set(modrinth_version)
+    versionName.set(display_name)
+    versionType.set(release_type)
+    changelog.set(changelog_text)
+    uploadFile.set(file("build/libs/${tasks.remapJar.get().archiveBaseName.get()}-${version}.jar"))
+    gameVersions.set(listOf(minecraft_version))
+    loaders.set(listOf("fabric", "quilt"))
+    dependencies {
+        required.project("fabric-api")
+        embedded.project("frozenlib")
+    }
+}
+
+val github by tasks.register("github") {
+    dependsOn(remapJar)
+    val env = System.getenv()
+    val token = env["GITHUB_TOKEN"]
+    val repoVar = env["GITHUB_REPOSITORY"]
+    onlyIf {
+        token != null && token != ""
     }
 
+    doLast {
+        val github = GitHub.connectUsingOAuth(token)
+        val repository = github.getRepository(repoVar)
 
-    val github = register("github") {
-        dependsOn(remapJar)
-        val env = System.getenv()
-        val token = env["GITHUB_TOKEN"]
-        val repoVar = env["GITHUB_REPOSITORY"]
-        onlyIf {
-            token != null && token != ""
-        }
+        val releaseBuilder = GHReleaseBuilder(repository, makeModrinthVersion(mod_version))
+        releaseBuilder.name(makeName(mod_version))
+        releaseBuilder.body(changelog_text)
+        releaseBuilder.commitish(getBranch())
+        releaseBuilder.prerelease(release_type != "release")
 
-        doLast {
-            val github = GitHub.connectUsingOAuth(token)
-            val repository = github.getRepository(repoVar)
-
-            val releaseBuilder = GHReleaseBuilder(repository, makeModrinthVersion(mod_version))
-            releaseBuilder.name(makeName(mod_version))
-            releaseBuilder.body(changelog_text)
-            releaseBuilder.commitish(getBranch())
-            releaseBuilder.prerelease(release_type != "release")
-
-            val ghRelease = releaseBuilder.create()
-            ghRelease.uploadAsset(remapJar.get().archiveFile.get().getAsFile(), "application/java-archive")
-            ghRelease.uploadAsset(remapSourcesJar.get().archiveFile.get().getAsFile(), "application/java-archive")
-            ghRelease.uploadAsset(javadocJar.outputs.files.singleFile, "application/java-archive")
-        }
+        val ghRelease = releaseBuilder.create()
+        ghRelease.uploadAsset(tasks.remapJar.get().archiveFile.get().getAsFile(), "application/java-archive")
+        ghRelease.uploadAsset(tasks.remapSourcesJar.get().archiveFile.get().getAsFile(), "application/java-archive")
+        ghRelease.uploadAsset(javadocJar.outputs.files.singleFile, "application/java-archive")
     }
+}
 
-    register("publishMod") {
-        dependsOn(github)
-        dependsOn(curseforge)
-        dependsOn(modrinth)
-    }
+val publishMod by tasks.register("publishMod") {
+    dependsOn(github)
+    dependsOn(tasks.curseforge)
+    dependsOn(tasks.modrinth)
 }

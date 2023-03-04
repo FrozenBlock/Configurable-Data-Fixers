@@ -27,9 +27,9 @@ pluginManagement {
 
 rootProject.name = "Configurable Data Fixers"
 
-localRepository("FrozenLib", "maven.modrinth:frozenlib")
+localRepository("FrozenLib", "maven.modrinth:frozenlib", true)
 
-fun localRepository(repo: String, dependencySub: String) {
+fun localRepository(repo: String, dependencySub: String, kotlin: Boolean) {
     println("Attempting to include local repo $repo")
 
     val allowLocalRepoUse = false
@@ -63,7 +63,7 @@ fun localRepository(repo: String, dependencySub: String) {
             }*/
             include(prefixedRepoName)
             project(prefixedRepoName).projectDir = file
-            project(prefixedRepoName).buildFileName = "./build.gradle.kts"
+            project(prefixedRepoName).buildFileName = "./build.gradle" + if (kotlin) ".kts" else ""
             println("Included local repo $repo")
         } else {
             println("Local repo $repo not found")
