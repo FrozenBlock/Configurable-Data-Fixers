@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "configurabledatafixers",
+  "id": "${mod_id}",
   "version": "${version}",
 
   "name": "Configurable Data Fixers",
@@ -27,9 +27,9 @@
     ]
   },
   "mixins": [
-    "configurable_data_fixers.mixins.json"
+    "configurabledatafixers.mixins.json"
   ],
-  "accessWidener": "configurable_data_fixers.accesswidener",
+  "accessWidener": "${mod_id}.accesswidener",
 
   "depends": {
     "frozenlib": ">=1.1.11-",
