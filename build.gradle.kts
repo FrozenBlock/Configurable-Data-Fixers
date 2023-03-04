@@ -251,7 +251,7 @@ dependencies {
 
     // CaffeineConfig
     //include(modImplementation("net.caffeinemc:mixin-config:1.0.0+1.17"))
-
+/*
     // Lunade
     modImplementation("maven.modrinth:simple-copper-pipes:${copperpipes_version}")
 
@@ -271,10 +271,10 @@ dependencies {
     modImplementation("net.caffeinemc:mixin-config:1.0.0+1.17")?.let { include(it) }
 
     // TerraBlender
-    modImplementation("com.github.glitchfiend:TerraBlender-fabric:${minecraft_version}-${terrablender_version}")
-
+    modImplementation("com.github.glitchfiend:TerraBlender-fabric:${terrablender_version}")
+*/
     "testmodImplementation"(sourceSets.main.get().output)
-
+/*
     // Sodium
     modCompileOnly("maven.modrinth:sodium:${sodium_version}")
     modCompileOnly("org.joml:joml:1.10.4")
@@ -315,7 +315,7 @@ dependencies {
         }
         modRuntimeOnly("me.flashyreese.mods:sodium-extra-fabric:${sodium_extra_version}")
         modRuntimeOnly("io.github.douira:glsl-transformer:0.27.0")
-    }
+    }*/
 }
 
 quiltflower {
