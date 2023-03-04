@@ -51,7 +51,7 @@ public class ConfigurableDataFixersTestmod implements ModInitializer {
 
 				context.register(Registries.BIOME, TEST_BIOME.location(), () -> new Biome.BiomeBuilder()
 						.temperature(0.5F)
-						.precipitation(Biome.Precipitation.RAIN)
+						.hasPrecipitation(true)
 						.downfall(0.5F)
 						.specialEffects(
 								new BiomeSpecialEffects.Builder()
