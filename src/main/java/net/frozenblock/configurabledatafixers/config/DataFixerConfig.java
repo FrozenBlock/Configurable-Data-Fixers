@@ -1,5 +1,6 @@
 package net.frozenblock.configurabledatafixers.config;
 
+import blue.endless.jankson.Comment;
 import com.mojang.serialization.Codec;
 import java.util.List;
 import net.frozenblock.configurabledatafixers.util.DataFixerSharedConstants;
@@ -7,11 +8,10 @@ import net.frozenblock.configurabledatafixers.util.DataFixEntry;
 import net.frozenblock.configurabledatafixers.util.Fixer;
 import net.frozenblock.configurabledatafixers.util.RegistryFixer;
 import net.frozenblock.configurabledatafixers.util.SchemaEntry;
-import net.frozenblock.lib.config.api.entry.Exclude;
 import net.frozenblock.lib.config.api.entry.TypedEntry;
 import net.frozenblock.lib.config.api.entry.TypedEntryType;
 import net.frozenblock.lib.config.api.instance.Config;
-import net.frozenblock.lib.config.api.instance.gson.GsonConfig;
+import net.frozenblock.lib.config.api.instance.json.JsonConfig;
 import net.frozenblock.lib.config.api.registry.ConfigRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -32,13 +32,27 @@ public class DataFixerConfig {
 			)
 	);
 
-	@Exclude
 	private static final Config<DataFixerConfig> INSTANCE = ConfigRegistry.register(
-			new GsonConfig<>(DataFixerSharedConstants.MOD_ID, DataFixerConfig.class)
+			new JsonConfig<>(DataFixerSharedConstants.MOD_ID, DataFixerConfig.class, true)
 	);
 
+	@Comment(
+  		"""
+		The data fixer's main data version. Increment this when you add a new schema.
+		Any schemas with a data version higher than this will be ignored.
+		"""
+	)
 	public int dataVersion = 0;
 
+	@Comment(
+		"""
+		The list of schemas to use for data fixing.
+		Each schema has a data version and a list of data fix entries.
+		Each data fix entry has a type and a list of fixers.
+		The four types are "biome", "block", "entity", and "item".
+		Although, it is recommended to use a registry fixer for items instead of a schema fixer.
+		"""
+	)
 	public TypedEntry<List<SchemaEntry>> schemas = new TypedEntry<>(
 			SCHEMA_ENTRY_LIST,
 			List.of(
@@ -104,6 +118,14 @@ public class DataFixerConfig {
 			)
 	);
 
+	@Comment(
+		"""
+		The list of registry fixers to use for data fixing.
+		Each registry fixer contains the id of the registry and a list of fixers.
+		Each fixer contains an old id and a new id, and will replace all instances of the old id with the new id.
+		However, if the old id is still found in the registry, it will not be replaced.
+		"""
+	)
 	public TypedEntry<List<RegistryFixer>> registryFixers = new TypedEntry<>(
 			REGISTRY_FIXER_LIST,
 			List.of(

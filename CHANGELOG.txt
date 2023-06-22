@@ -4,3 +4,5 @@ Make sure to clear after release
 
 Put changelog here:
 -----------------
+- Changed config file to a JSON5 file. The old configuration file will need to be converted. A copy-paste will likely work.
+- Updated embedded FrozenLib to 1.2.4
