@@ -51,6 +51,8 @@ public class DataFixerConfig {
 		Each data fix entry has a type and a list of fixers.
 		The four types are "biome", "block", "entity", and "item".
 		Although, it is recommended to use a registry fixer for items instead of a schema fixer.
+		Each fixer contains an old id and a new id, and will replace all instances of the old id with the new id.
+		However, if the old id is still found in the registry, it will not be replaced.
 		"""
 	)
 	public TypedEntry<List<SchemaEntry>> schemas = new TypedEntry<>(
