@@ -256,6 +256,9 @@ dependencies {
     // Jankson
     implementation("blue.endless:jankson:$jankson_version")
 
+    // MixinExtras
+    implementation("com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.8")
+
     "testmodImplementation"(sourceSets.main.get().output)
 
 /*

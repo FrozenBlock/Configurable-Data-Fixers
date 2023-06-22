@@ -32,7 +32,7 @@ localRepository("FrozenLib", "maven.modrinth:frozenlib", true)
 fun localRepository(repo: String, dependencySub: String, kotlin: Boolean) {
     println("Attempting to include local repo $repo")
 
-    val allowLocalRepoUse = false
+    val allowLocalRepoUse = true
     val allowLocalRepoInConsoleMode = true
 
     val androidInjectedInvokedFromIde by extra("android.injected.invoked.from.ide")

@@ -19,11 +19,8 @@ public record RegistryFixer(ResourceLocation registryKey, List<Fixer> fixers) {
 
 	public static ResourceLocation getFixedValueInRegistry(Registry<?> registry, @Nullable ResourceLocation name) {
 		if (name != null) {
-			var instance = DataFixerConfig.get();
-			var config = instance.config();
-			var registryFixers = config.registryFixers;
-			var fixers = registryFixers.value();
-			for (RegistryFixer registryFixer : fixers) {
+			var registryFixers = DataFixerUtils.getRegistryFixers();
+			for (RegistryFixer registryFixer : registryFixers) {
 				if (registryFixer.registryKey().equals(registry.key().location())) {
 					for (Fixer fixer : registryFixer.fixers()) {
 						if (fixer.oldId().equals(name)) {

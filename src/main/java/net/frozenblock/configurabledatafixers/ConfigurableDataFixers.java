@@ -7,7 +7,10 @@ import net.fabricmc.loader.api.ModContainer;
 import net.frozenblock.configurabledatafixers.config.DataFixerConfig;
 import net.frozenblock.configurabledatafixers.util.DataFixerSharedConstants;
 import net.frozenblock.configurabledatafixers.util.DataFixEntry;
+import net.frozenblock.configurabledatafixers.util.DataFixerUtils;
 import net.frozenblock.configurabledatafixers.util.Fixer;
+import net.frozenblock.configurabledatafixers.util.RegistryFixer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.datafix.schemas.NamespacedSchema;
 import org.jetbrains.annotations.NotNull;
 import org.quiltmc.qsl.frozenblock.misc.datafixerupper.api.QuiltDataFixerBuilder;
@@ -31,10 +34,7 @@ public class ConfigurableDataFixers implements ModInitializer {
 	private static void applyDataFixes(final @NotNull ModContainer mod) {
 		DataFixerSharedConstants.log("Applying configurable data fixes", DataFixerSharedConstants.UNSTABLE_LOGGING);
 		var config = DataFixerConfig.get().config();
-		if (config.schemas == null) {
-			throw new IllegalStateException("Please update your config file!");
-		}
-		var schemas = config.schemas.value();
+		var schemas = DataFixerUtils.getSchemas();
 		var dataVersion = config.dataVersion;
 
 		var builder = new QuiltDataFixerBuilder(dataVersion);
@@ -91,7 +91,10 @@ public class ConfigurableDataFixers implements ModInitializer {
 			case "biome" -> SimpleFixes.addBiomeRenameFix(builder, fixName, Map.of(oldId, newId), schema);
 			case "block" -> SimpleFixes.addBlockRenameFix(builder, fixName, oldId, newId, schema);
 			case "entity" -> SimpleFixes.addEntityRenameFix(builder, fixName, oldId, newId, schema);
-			case "item" -> SimpleFixes.addItemRenameFix(builder, fixName, oldId, newId, schema);
+			case "item" -> {
+				SimpleFixes.addItemRenameFix(builder, fixName, oldId, newId, schema);
+				DataFixerUtils.addRegistryFixer(new RegistryFixer(new ResourceLocation("item"), List.of(new Fixer(oldId, newId))));
+			}
 			default -> DataFixerSharedConstants.error("Invalid data fix type: " + entry.type(), true);
 		}
 	}

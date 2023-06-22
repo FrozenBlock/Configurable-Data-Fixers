@@ -43,7 +43,7 @@ public class ConfigurableDataFixersTestmod implements ModInitializer {
 		var testItem = Registry.register(BuiltInRegistries.ITEM, id("test_item"), new Item(new FabricItemSettings()));
 		FrozenCreativeTabs.add(testItem, CreativeModeTabs.TOOLS_AND_UTILITIES);
 
-		RegistryEvents.DYNAMIC_REGISTRY_SETUP.register(context -> {
+		RegistryEvents.DYNAMIC_REGISTRY_SETUP.register(context ->
 			context.withRegistries(registries -> {
 				DataFixerSharedConstants.log("Adding test biome", DataFixerSharedConstants.UNSTABLE_LOGGING);
 				var placedFeatures = context.registryManager().lookupOrThrow(Registries.PLACED_FEATURE);
@@ -65,8 +65,8 @@ public class ConfigurableDataFixersTestmod implements ModInitializer {
 						.generationSettings(new BiomeGenerationSettings.Builder(placedFeatures, worldCarvers).build())
 						.build()
 				);
-			}, Set.of(Registries.BIOME, Registries.PLACED_FEATURE, Registries.CONFIGURED_CARVER));
-		});
+			}, Set.of(Registries.BIOME, Registries.PLACED_FEATURE, Registries.CONFIGURED_CARVER))
+		);
 
 		FrozenOverworldBiomes.addOverworldBiome(
 				TEST_BIOME,
