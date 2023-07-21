@@ -34,7 +34,11 @@ public class DataFixerConfig {
 	);
 
 	private static final Config<DataFixerConfig> INSTANCE = ConfigRegistry.register(
-			new JsonConfig<>(DataFixerSharedConstants.MOD_ID, DataFixerConfig.class, true)
+			new JsonConfig<>(
+				DataFixerSharedConstants.MOD_ID,
+				DataFixerConfig.class,
+				true
+			)
 	);
 
 	@Comment(
