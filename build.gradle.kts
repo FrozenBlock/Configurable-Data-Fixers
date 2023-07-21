@@ -19,7 +19,7 @@ buildscript {
 
 plugins {
     id("fabric-loom") version("+")
-    id("io.github.juuxel.loom-quiltflower") version("+")
+    id("io.github.juuxel.loom-vineflower") version("+")
     id("org.ajoberstar.grgit") version("+")
     id("com.modrinth.minotaur") version("+")
     id("com.matthewprenger.cursegradle") version("+")
