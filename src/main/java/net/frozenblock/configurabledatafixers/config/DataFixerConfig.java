@@ -1,6 +1,5 @@
 package net.frozenblock.configurabledatafixers.config;
 
-import blue.endless.jankson.Comment;
 import com.mojang.serialization.Codec;
 import java.util.List;
 import net.frozenblock.configurabledatafixers.util.DataFixerSharedConstants;
@@ -14,7 +13,7 @@ import net.frozenblock.lib.config.api.instance.Config;
 import net.frozenblock.lib.config.api.instance.json.JsonConfig;
 import net.frozenblock.lib.config.api.instance.json.JsonType;
 import net.frozenblock.lib.config.api.registry.ConfigRegistry;
-import net.minecraft.core.Registry;
+import net.frozenblock.lib.shadow.blue.endless.jankson.Comment;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 

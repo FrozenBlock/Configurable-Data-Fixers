@@ -44,7 +44,6 @@ val archives_base_name: String by project
 val fabric_version: String by project
 val fabric_asm_version: String by project
 val frozenlib_version: String by project
-val jankson_version: String by project
 
 val betterend_version: String by project
 val betternether_version: String by project
@@ -247,14 +246,11 @@ dependencies {
     if (local_frozenlib) {
         implementation(project(path = ":FrozenLib", configuration = "dev"))?.let { include(it) }
     } else {
-        modImplementation("maven.modrinth:frozenlib:${frozenlib_version}")?.let { include(it) }
+        modApi("maven.modrinth:frozenlib:${frozenlib_version}")
     }
 
     // Mod Menu
     //modImplementation("com.terraformersmc:modmenu:${modmenu_version}")
-
-    // Jankson
-    implementation("blue.endless:jankson:$jankson_version")
 
     // MixinExtras
     implementation("com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.8")
@@ -305,8 +301,8 @@ dependencies {
     }*/
 }
 
-quiltflower {
-    quiltflowerVersion.set("1.8.0")
+vineflower {
+    toolVersion.set("1.9.3")
 }
 
 tasks {
@@ -314,7 +310,11 @@ tasks {
         val properties = HashMap<String, Any>()
         properties["mod_id"] = mod_id
         properties["version"] = version
-        properties["minecraft_version"] = "1.19.4-"
+        properties["minecraft_version"] = minecraft_version
+
+        properties["fabric_loader_version"] = ">=$loader_version"
+        properties["fabric_api_version"] = ">=$fabric_version"
+        properties["frozenlib_version"] = ">=${frozenlib_version.split('-').first()}"
 
         properties.forEach { (a, b) -> inputs.property(a, b) }
 
@@ -467,7 +467,7 @@ curseforge {
         addGameVersion(gameVersion)
         relations(closureOf<CurseRelation> {
             requiredDependency("fabric-api")
-            embeddedLibrary("frozenlib")
+            requiredDependency("frozenlib")
         })
         mainArtifact(file("build/libs/${tasks.remapJar.get().archiveBaseName.get()}-${version}.jar"), closureOf<CurseArtifact> {
             displayName = display_name
@@ -491,7 +491,7 @@ modrinth {
     loaders.set(listOf("fabric", "quilt"))
     dependencies {
         required.project("fabric-api")
-        embedded.project("frozenlib")
+        required.project("frozenlib")
     }
 }
 
